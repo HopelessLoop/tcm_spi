@@ -51,7 +51,8 @@ int main(void)
 
   printf("tcm hash successfully!\r\n");
   printf("\r\n");
-
+  
+  while(1){};
   /*
   //TPM2_CLEAR
   uint8_t tpm2_clear[] = "\x80\x02\x00\x00\x00\x1b\x00\x00\x01\x26\x40\x00\x00\x0c\x00\x00\x00\x09\x40\x00\x00\x09\x00\x00\x00\x00\x00";

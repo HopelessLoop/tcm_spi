@@ -7,7 +7,7 @@ extern SPI_HandleTypeDef tcmHSpi; /* TCMSPI句柄 */
 
 #define TCM_SPI                             SPI1
 #define TCM_SPI_BUFF_SIZE                   512
-
+#define TCM_COMMAND_BUFF_SIZE               512
 /* TCM命令宏定义 */
 
 /* From TPM 2.0 Part 2: Definition of TCM_CC Constants */

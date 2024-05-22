@@ -3,7 +3,7 @@
 #include "./BSP/TCM/tcm.h"
 
 uint16_t respSize = 0;
-uint8_t commandBuf[512];
+uint8_t commandBuf[TCM_COMMAND_BUFF_SIZE];
 
 void writeUint16ToBuffer(uint8_t *buffer, uint16_t index, uint16_t data)
 {
@@ -30,6 +30,30 @@ int lp_tcm_startup(uint8_t *respBuf)
 
     respSize = sendCommand(commandBuf, 12, respBuf);
 
+    return respSize;
+}
+
+int lp_tcm_clearup(uint8_t *respBuf)
+{
+    writeUint16ToBuffer(commandBuf, 0, TCM_ST_NO_SESSIONS);
+    writeUint32ToBuffer(commandBuf, 2, 12);
+    writeUint32ToBuffer(commandBuf, 6, TCM_CC_Startup);
+    writeUint16ToBuffer(commandBuf, 10, TCM_SU_CLEAR);
+
+    respSize = sendCommand(commandBuf, 12, respBuf);
+
+    return respSize;
+}
+
+int lp_tcm_getrandom(uint16_t bytesRequested, uint8_t *respBuf)
+{
+    writeUint16ToBuffer(commandBuf, 0, TCM_ST_NO_SESSIONS);
+    writeUint32ToBuffer(commandBuf, 2, 12);
+    writeUint32ToBuffer(commandBuf, 6, TCM_CC_GetRandom);
+    writeUint16ToBuffer(commandBuf, 10, bytesRequested);
+
+    respSize = sendCommand(commandBuf, 12, respBuf);
+    
     return respSize;
 }
 
