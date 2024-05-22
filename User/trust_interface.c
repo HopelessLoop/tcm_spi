@@ -73,7 +73,7 @@ int lp_tcm_hash_sm3(uint8_t *data, uint16_t dataSize, uint8_t *respBuf)
         commandBuf[i] = data[j];
     }
 
-    writeUint16ToBuffer(commandBuf, 12 + dataSize, TCM_ALG_SHA256);
+    writeUint16ToBuffer(commandBuf, 12 + dataSize, TCM_ALG_SM3_256);
     writeUint32ToBuffer(commandBuf, 12 + dataSize + 2, TCM_RH_NULL);
 
     respSize = sendCommand(commandBuf, commandSize, respBuf);

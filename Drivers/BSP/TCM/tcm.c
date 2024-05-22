@@ -2,7 +2,9 @@
 #include "./SYSTEM/usart/usart.h"
 #include "./BSP/SPI/spi.h"
 #include "./BSP/TCM/tcm.h"
-#include "stdlib.h"
+
+#define CS_LOW HAL_GPIO_WritePin(GPIOA,GPIO_PIN_4,0)
+#define CS_HIGH HAL_GPIO_WritePin(GPIOA,GPIO_PIN_4,1)
 
 SPI_HandleTypeDef tcmHSpi; /* SPI句柄 */
 
@@ -32,25 +34,15 @@ void tcm_init()
     GPIO_InitTypeDef gpio_init_struct;                       // 初始化片选引脚
     
     __HAL_RCC_GPIOA_CLK_ENABLE();
-    gpio_init_struct.Pin = GPIO_PIN_4 | GPIO_PIN_1;
+    gpio_init_struct.Pin = GPIO_PIN_4;
     gpio_init_struct.Mode = GPIO_MODE_OUTPUT_PP;
     gpio_init_struct.Pull = GPIO_NOPULL;
     gpio_init_struct.Speed = GPIO_SPEED_FREQ_LOW;
     HAL_GPIO_Init(GPIOA, &gpio_init_struct);
     
-    HAL_GPIO_WritePin(GPIOA,GPIO_PIN_1,1);
     HAL_GPIO_WritePin(GPIOA,GPIO_PIN_4,1);
     
     printf("tcm init successfully!\r\n");
-}
-
-void target_reset()
-{
-    HAL_GPIO_WritePin(GPIOA,GPIO_PIN_1,0);
-    HAL_Delay(500);
-    HAL_GPIO_WritePin(GPIOA,GPIO_PIN_1,1);
-    HAL_Delay(500);
-    return;
 }
 
 void tcm_write_register(uint8_t addr_byte1, uint8_t addr_byte2, uint8_t *data, uint8_t data_size)
@@ -128,8 +120,6 @@ void tcm_read_register(uint8_t addr_byte1, uint8_t addr_byte2, uint8_t *dest_buf
     return;
 }
 
-#define CS_LOW HAL_GPIO_WritePin(GPIOA,GPIO_PIN_4,0)
-#define CS_HIGH HAL_GPIO_WritePin(GPIOA,GPIO_PIN_4,1)
 
 int sendCommand(uint8_t *cmd_frame, int cmd_size, uint8_t *resp_buf)
 {
@@ -147,7 +137,7 @@ int sendCommand(uint8_t *cmd_frame, int cmd_size, uint8_t *resp_buf)
     CS_LOW;
     tcm_read_register(0x00, 0x00, NULL, 1);
     CS_HIGH;
-    HAL_Delay(10);
+    //HAL_Delay(10);
     read_buf[4] = '\x00';
     int errcount = 0;
 
@@ -214,7 +204,7 @@ int sendCommand(uint8_t *cmd_frame, int cmd_size, uint8_t *resp_buf)
             tcm_write_register(0x00, 0x24, cmd_frame + writeHead, writeSize);// "\x80\x01\x00\x00\x00\x0c\x00\x00\x01\x44\x00");
             CS_HIGH;
 
-            HAL_Delay(10);
+            //HAL_Delay(10);
             printf("Checking Expect bit\r\n");
             CS_LOW;
             tcm_read_register(0x00, 0x18, read_buf, 1);
@@ -249,7 +239,7 @@ int sendCommand(uint8_t *cmd_frame, int cmd_size, uint8_t *resp_buf)
     tcm_write_register(0x00, 0x18, "\x20", 1);
     CS_HIGH;
 
-    HAL_Delay(100);
+    //HAL_Delay(100);
 
     errcount = 0;
     read_buf[4] = '\x00';
@@ -261,7 +251,7 @@ int sendCommand(uint8_t *cmd_frame, int cmd_size, uint8_t *resp_buf)
             printf("Failure (errcount > 10, postcmd)...\r\n");
             while(1){};
         }
-        HAL_Delay(5000);
+        //HAL_Delay(5000);
         printf("Waiting for dataAvail...\r\n");
         CS_LOW;
         tcm_read_register(0x00, 0x18, read_buf, 1);
@@ -327,7 +317,7 @@ int sendCommand(uint8_t *cmd_frame, int cmd_size, uint8_t *resp_buf)
                       resp_buf[10+writeHead+i] = read_buf[i + 4];
                     }
                     writeHead += 30;
-                    HAL_Delay(50);
+                    //HAL_Delay(50);
                     /*
                     readbuf[4] = '\x00';
 
@@ -359,7 +349,7 @@ int sendCommand(uint8_t *cmd_frame, int cmd_size, uint8_t *resp_buf)
                     {
                         resp_buf[10+writeHead+i] = read_buf[i + 4];
                     }
-                    HAL_Delay(50);
+                    //HAL_Delay(50);
                     // writeHead += 30;
                 }
             }
@@ -378,7 +368,7 @@ int sendCommand(uint8_t *cmd_frame, int cmd_size, uint8_t *resp_buf)
                 printf("Failure (errcount > 10, waiting for stsvalid 1 dataavail 0)...\r\n");
                 while(1){};
             }
-            HAL_Delay(2000);
+            //HAL_Delay(2000);
             printf("Waiting for stsValid == 1 && dataAvail == 0\r\n");
             CS_LOW;
             tcm_read_register(0x00, 0x18, read_buf, 1);
