@@ -123,6 +123,8 @@ void tcm_read_register(uint8_t addr_byte1, uint8_t addr_byte2, uint8_t *dest_buf
 
 int sendCommand(uint8_t *cmd_frame, int cmd_size, uint8_t *resp_buf)
 {
+    uint32_t startTime1 = HAL_GetTick();
+    
     printf("sendCommand Called\r\n");
     
     uint8_t read_buf[TCM_SPI_BUFF_SIZE];
@@ -153,6 +155,7 @@ int sendCommand(uint8_t *cmd_frame, int cmd_size, uint8_t *resp_buf)
         CS_LOW;
         tcm_read_register(0x00, 0x18, read_buf, 1);
         CS_HIGH;
+        HAL_Delay(10);
     }
 
 
@@ -355,26 +358,28 @@ int sendCommand(uint8_t *cmd_frame, int cmd_size, uint8_t *resp_buf)
             }
         }
     }
-
-    if(CFG_NOWAIT == 0)
-    {
-        errcount = 0;
-        read_buf[4] = '\x00';
-        while((read_buf[4] & 0x80) == 0 || (read_buf[4] & 0x10) != 0)
-        {
-            errcount += 1;
-            if(errcount > 10)
-            {
-                printf("Failure (errcount > 10, waiting for stsvalid 1 dataavail 0)...\r\n");
-                while(1){};
-            }
-            //HAL_Delay(2000);
-            printf("Waiting for stsValid == 1 && dataAvail == 0\r\n");
-            CS_LOW;
-            tcm_read_register(0x00, 0x18, read_buf, 1);
-            CS_HIGH;
-        }
-    }
+    uint32_t endTime1 = HAL_GetTick();
+    printf("Time consumption: %d ms\r\n", endTime1 - startTime1);
+    
+    // if(CFG_NOWAIT == 0)
+    // {
+    //     errcount = 0;
+    //     read_buf[4] = '\x00';
+    //     while((read_buf[4] & 0x80) == 0 || (read_buf[4] & 0x10) != 0)
+    //     {
+    //         errcount += 1;
+    //         if(errcount > 10)
+    //         {
+    //             printf("Failure (errcount > 10, waiting for stsvalid 1 dataavail 0)...\r\n");
+    //             while(1){};
+    //         }
+    //         //HAL_Delay(2000);
+    //         printf("Waiting for stsValid == 1 && dataAvail == 0\r\n");
+    //         CS_LOW;
+    //         tcm_read_register(0x00, 0x18, read_buf, 1);
+    //         CS_HIGH;
+    //     }
+    // }
 
     printf("Resetting state machine\r\n");
     CS_LOW;
