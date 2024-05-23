@@ -36,8 +36,24 @@ int main(void)
   printf("tcm startup successfully!\r\n");
   printf("\r\n");
   
-    // TCM_STARTUP
-  respSize = lp_tcm_pcrread(0, respBuf);
+
+  uint8_t pcrExtendData[] = "\x0b\xc0\x00\x98\x20\xc0\x35\x33\x63\xd7\xd5\x7f\xf7\x08\xc3\xf5\xc1\x30\x65\x8b\x59\x41\x86\xe3\xe5\xbf\x55\x8f\xd5\xf7\xc8\xed";
+  // TCM_PCREXTEND
+  respSize = lp_tcm_pcrextend(0, pcrExtendData ,32, respBuf);
+  printf("OK: ");
+
+  for (i = 0; i < respSize; i++)
+  {
+    printf("%02x ", respBuf[i]);
+  }
+  printf("\r\n");
+  
+  printf("tcm pcrextend successfully!\r\n");
+  printf("\r\n");
+
+  
+  // TCM_READPCR
+  respSize = lp_tcm_pcrread(1, respBuf);
   printf("OK: ");
 
   for (i = 0; i < respSize; i++)

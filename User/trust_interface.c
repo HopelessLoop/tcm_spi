@@ -167,3 +167,33 @@ int lp_tcm_pcrread(uint8_t pcrIndex, uint8_t *respBuf)
 
     return respSize;
 }
+
+int lp_tcm_pcrextend(uint8_t pcrIndex, uint8_t *extendData, uint8_t extendDataSize, uint8_t *respBuf)
+{
+    writeUint16ToBuffer(commandBuf, 0, TCM_ST_SESSIONS); /* 命令头 */
+    writeUint32ToBuffer(commandBuf, 2, 0x41); /* 命令总长度 */
+    writeUint32ToBuffer(commandBuf, 6, TCM_CC_PCR_Extend); /* 命令码 */
+    
+    writeUint32ToBuffer(commandBuf, 10, pcrIndex); /* pcrHandle */
+    writeUint32ToBuffer(commandBuf, 14, 9); /* pcrHandle */
+    writeUint32ToBuffer(commandBuf, 18, 0x40000009); /* pcrHandle */
+    commandBuf[22] = 0x00;
+    writeUint32ToBuffer(commandBuf, 23, 0); /* pcrHandle */
+    writeUint32ToBuffer(commandBuf, 27, 1); /* pcrcount */
+    writeUint16ToBuffer(commandBuf, 31, TCM_ALG_SHA256); /* PCR所属的算法 */
+
+    for (uint16_t i = 0, j = 33; i < extendDataSize; i++,j++)
+    {
+        commandBuf[j] = extendData[i]; 
+    }
+    
+    for (uint8_t i = 0; i < 0x41; i++)
+    {
+        printf("%02x ", commandBuf[i]);
+    }
+    
+    printf("\r\n");
+    respSize = sendCommand(commandBuf, 0x41, respBuf);
+
+    return respSize;
+}
