@@ -157,12 +157,6 @@ int lp_tcm_pcrread(uint8_t pcrIndex, uint8_t *respBuf)
         commandBuf[19] = (uint8_t)(1 << (pcrIndex % 8));
     }
     
-    for (uint8_t i = 0; i < 20; i++)
-    {
-        printf("%02x ", commandBuf[i]);
-    }
-    
-    printf("\r\n");
     respSize = sendCommand(commandBuf, 20, respBuf);
 
     return respSize;
@@ -187,13 +181,31 @@ int lp_tcm_pcrextend(uint8_t pcrIndex, uint8_t *extendData, uint8_t extendDataSi
         commandBuf[j] = extendData[i]; 
     }
     
-    for (uint8_t i = 0; i < 0x41; i++)
-    {
-        printf("%02x ", commandBuf[i]);
-    }
-    
-    printf("\r\n");
     respSize = sendCommand(commandBuf, 0x41, respBuf);
+
+    return respSize;
+}
+
+int lp_tcm_pcrreset(uint8_t pcrIndex, uint8_t *respBuf)
+{
+    writeUint16ToBuffer(commandBuf, 0, TCM_ST_SESSIONS); /* 命令头 */
+    writeUint32ToBuffer(commandBuf, 2, 0x1b); /* 命令总长度 */
+    writeUint32ToBuffer(commandBuf, 6, TCM_CC_PCR_Reset); /* 命令码 */
+    
+    writeUint32ToBuffer(commandBuf, 10, pcrIndex); /* pcrHandle */
+    writeUint32ToBuffer(commandBuf, 14, 9); /* pcrHandle */
+    writeUint32ToBuffer(commandBuf, 18, 0x40000009); /* pcrHandle */
+    commandBuf[22] = 0x00;
+    writeUint32ToBuffer(commandBuf, 23, 0); /* pcrHandle */
+
+    
+    // for (uint8_t i = 0; i < 0x41; i++)
+    // {
+    //     printf("%02x ", commandBuf[i]);
+    // }
+    
+    // printf("\r\n");
+    respSize = sendCommand(commandBuf, 0x1b, respBuf);
 
     return respSize;
 }

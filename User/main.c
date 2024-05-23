@@ -39,7 +39,7 @@ int main(void)
 
   uint8_t pcrExtendData[] = "\x0b\xc0\x00\x98\x20\xc0\x35\x33\x63\xd7\xd5\x7f\xf7\x08\xc3\xf5\xc1\x30\x65\x8b\x59\x41\x86\xe3\xe5\xbf\x55\x8f\xd5\xf7\xc8\xed";
   // TCM_PCREXTEND
-  respSize = lp_tcm_pcrextend(0, pcrExtendData ,32, respBuf);
+  respSize = lp_tcm_pcrextend(16, pcrExtendData, 32, respBuf);
   printf("OK: ");
 
   for (i = 0; i < respSize; i++)
@@ -53,7 +53,7 @@ int main(void)
 
   
   // TCM_READPCR
-  respSize = lp_tcm_pcrread(1, respBuf);
+  respSize = lp_tcm_pcrread(16, respBuf);
   printf("OK: ");
 
   for (i = 0; i < respSize; i++)
@@ -62,9 +62,35 @@ int main(void)
   }
   printf("\r\n");
   
-  printf("tcm readpcr successfully!\r\n");
+  printf("tcm pcrread successfully!\r\n");
   printf("\r\n");
+  
+  // TCM_reset
+  respSize = lp_tcm_pcrreset(16, respBuf);
+  printf("OK: ");
 
+  for (i = 0; i < respSize; i++)
+  {
+    printf("%02x ", respBuf[i]);
+  }
+  printf("\r\n");
+  
+  printf("tcm pcrreset successfully!\r\n");
+  printf("\r\n");
+  
+  // TCM_READPCR
+  respSize = lp_tcm_pcrread(16, respBuf);
+  printf("OK: ");
+
+  for (i = 0; i < respSize; i++)
+  {
+    printf("%02x ", respBuf[i]);
+  }
+  printf("\r\n");
+  
+  printf("tcm pcrread successfully!\r\n");
+  printf("\r\n");
+  
   // uint8_t hash_data[] = "\xb9\x7b\x6d\x49\xfd\x5e\xfe\x81\x64\xeb\x15\xf6\x9a\x99\xe5\xc0\x80\x39\xc1\x73\x7a\x0b\xbd\xb9\x07\xe4\x5d\x9d\xe6\x4d\x66\x27\x05\x75\x31\x4e\xd4\x76\xb7\xd6\xcf\x95\xf5\xe1\xee\x7b\x30\x07\xdf\x0b\xfa\x02\x18\x5c\x86\x7d\x5c\xf0\xc9\x61\x1c\x6e\x84\x14\x78\x59\x66\xee\xb4\x08\x6b\x64\xb1\x47\xf4\xe3\x9a\x70\xf0\xba\x37\xca\x49\x24\xe6\x0c\xae\x7d\x67\xf0\xd4\x3a\xae\x37\x34\xdb\x61\xb1\x99\xa6\x4b\x33\xf2\xb9\x59\x88\xde\x60\x94\xa1\x96\xe7\x39\x43\xe1\xd8\x71\x4e\x01\x53\x5c\x9d\xba\x21\xf5\x5e\xb5\x9d";
 
   // respSize = lp_tcm_hash_sha256(hash_data, 128, respBuf);

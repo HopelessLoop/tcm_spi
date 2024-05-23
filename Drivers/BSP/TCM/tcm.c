@@ -61,21 +61,21 @@ void tcm_write_register(uint8_t addr_byte1, uint8_t addr_byte2, uint8_t *data, u
     
     spi_read_write_data(&tcmHSpi, g_tcm_spi_tx_buff, tx_package_size, g_tcm_spi_rx_buff);  /* 发送数据包 */
     
-    printf("TX: ");                             /* 串口输出发送的数据 */
-    for(i = 0; i < tx_package_size; i++)
-    {
-        printf("%02x ", g_tcm_spi_tx_buff[i]);
-    }
+    // printf("TX: ");                             /* 串口输出发送的数据 */
+    // for(i = 0; i < tx_package_size; i++)
+    // {
+    //     printf("%02x ", g_tcm_spi_tx_buff[i]);
+    // }
     
-    printf("\r\n");
+    // printf("\r\n");
     
-    printf("RX: ");                             /* 串口输出接收的数据 */
-    for(i = 0; i < tx_package_size; i++)
-    {
-        printf("%02x ", g_tcm_spi_rx_buff[i]);
-    }
+    // printf("RX: ");                             /* 串口输出接收的数据 */
+    // for(i = 0; i < tx_package_size; i++)
+    // {
+    //     printf("%02x ", g_tcm_spi_rx_buff[i]);
+    // }
     
-    printf("\r\n");
+    // printf("\r\n");
     
     return;
 }
@@ -94,19 +94,19 @@ void tcm_read_register(uint8_t addr_byte1, uint8_t addr_byte2, uint8_t *dest_buf
         g_tcm_spi_tx_buff[4 + i] = 0x00;
     }
     spi_read_write_data(&tcmHSpi, g_tcm_spi_tx_buff, tx_package_size, g_tcm_spi_rx_buff);    /* 发送数据包 */
-    printf("TX: ");                                 /* 串口输出发送的数据 */
-    for(i = 0; i < tx_package_size; i++)
-    {
-        printf("%02x ",g_tcm_spi_tx_buff[i]);
-    }
-    printf("\r\n");
+    // printf("TX: ");                                 /* 串口输出发送的数据 */
+    // for(i = 0; i < tx_package_size; i++)
+    // {
+    //     printf("%02x ",g_tcm_spi_tx_buff[i]);
+    // }
+    // printf("\r\n");
     
-    printf("RX: ");                                 /* 串口输出接收的数据 */
-    for(i = 0; i < tx_package_size; i++)
-    {
-        printf("%02x ",g_tcm_spi_rx_buff[i]);
-    }
-    printf("\r\n");
+    // printf("RX: ");                                 /* 串口输出接收的数据 */
+    // for(i = 0; i < tx_package_size; i++)
+    // {
+    //     printf("%02x ",g_tcm_spi_rx_buff[i]);
+    // }
+    // printf("\r\n");
 
 
     if(dest_buf != NULL)                            /* 拷贝接收的数据 */

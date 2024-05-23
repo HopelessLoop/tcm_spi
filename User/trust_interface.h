@@ -28,4 +28,5 @@ int lp_tcm_hash_sha256(uint8_t *data, uint16_t dataSize, uint8_t *respBuf);
 int lp_tcm_hash_sm3(uint8_t *data, uint16_t data_size, uint8_t *respBuf);
 int lp_tcm_pcrread(uint8_t pcrIndex, uint8_t *respBuf);
 int lp_tcm_pcrextend(uint8_t pcrIndex, uint8_t *extendData, uint8_t extendDataSize, uint8_t *respBuf);
+int lp_tcm_pcrreset(uint8_t pcrIndex, uint8_t *respBuf);
 #endif
