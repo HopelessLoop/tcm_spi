@@ -271,5 +271,5 @@ typedef TCM_HANDLE          TCM_RH;
 void tcm_init();
 void tcm_read_register(uint8_t addr_byte1, uint8_t addr_byte2, uint8_t *dest_buf, uint8_t read_size);
 void tcm_write_register(uint8_t addr_byte1, uint8_t addr_byte2, uint8_t *data, uint8_t data_size);
-int sendCommand(uint8_t *cmd_frame, int cmd_size, uint8_t *resp_buf);
+int sendCommand(uint8_t *cmd_frame, int cmd_size, uint8_t *resp_buf, uint8_t delayTime);
 #endif
